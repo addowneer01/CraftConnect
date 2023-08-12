@@ -1,0 +1,5 @@
+приложение:
+подключение(отправка): <type(int) 1, password(String), user(String) "root"/"guest">
+
+сервер:
+подключение(ответ): <type(int) 1, status(String) "success"/"failure", debugMessage(String)>
