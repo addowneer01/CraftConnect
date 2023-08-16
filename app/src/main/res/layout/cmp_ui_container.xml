@@ -2,20 +2,24 @@
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
-
+    android:layout_height="wrap_content"
+    android:layout_margin="4dp">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:tag="layout">
+
 
         <TextView
             android:id="@+id/textView7"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#673AB7"
-            android:backgroundTint="#673AB7"
-            android:text="TextView"
+            android:tag="headText"
+            android:text="123"
+            android:textAlignment="center"
+            android:textColor="#FFFFFF"
             android:textSize="24sp" />
     </LinearLayout>
 </FrameLayout>
