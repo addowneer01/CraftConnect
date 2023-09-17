@@ -13,9 +13,9 @@
         android:layout_marginEnd="83dp"
         android:rotation="0"
         android:rotationX="0"
-        android:rotationY="00"
+        android:rotationY="0"
         android:text="Порт:"
-        android:textColor="#6750A3"
+        android:textColor="#673AB7"
         android:textSize="24sp"
         app:layout_constraintEnd_toStartOf="@+id/guideline5"
         app:layout_constraintTop_toTopOf="@+id/guideline3" />
@@ -30,8 +30,8 @@
         android:maxLength="3"
         android:rotation="0"
         android:rotationX="0"
-        android:rotationY="00"
-        android:text="107"
+        android:rotationY="0"
+        android:text="100"
         android:textAlignment="center"
         app:layout_constraintBottom_toTopOf="@+id/guideline3"
         app:layout_constraintStart_toEndOf="@+id/textView4" />
@@ -47,7 +47,7 @@
         android:nextFocusDown="@id/ip_plain_2"
         android:rotation="0"
         android:rotationX="0"
-        android:rotationY="00"
+        android:rotationY="0"
         android:text="192"
         android:textAlignment="center"
         app:layout_constraintBottom_toTopOf="@+id/guideline3"
@@ -83,20 +83,6 @@
         app:layout_constraintBottom_toTopOf="@+id/guideline3"
         app:layout_constraintEnd_toStartOf="@+id/textView2" />
 
-    <Button
-        android:id="@+id/set_start_button"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        android:background="@drawable/baseline_settings_24"
-        android:importantForAccessibility="noHideDescendants"
-        android:rotation="0"
-        android:rotationX="0"
-        android:rotationY="00"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
@@ -106,7 +92,7 @@
         android:rotationX="0"
         android:rotationY="00"
         android:text="IP-адрес: "
-        android:textColor="#6750A3"
+        android:textColor="#673AB7"
         android:textSize="24sp"
         app:layout_constraintBottom_toTopOf="@+id/textView3"
         app:layout_constraintEnd_toStartOf="@+id/guideline5" />
@@ -183,7 +169,7 @@
         android:rotationX="0"
         android:rotationY="00"
         android:text="Пароль:"
-        android:textColor="#6750A3"
+        android:textColor="#673AB7"
         android:textSize="24sp"
         app:layout_constraintEnd_toStartOf="@+id/guideline5"
         app:layout_constraintTop_toBottomOf="@+id/port_plain" />
@@ -210,11 +196,10 @@
         android:layout_marginEnd="-142dp"
         android:ems="10"
         android:hint="по умолчанию: 8888"
-        android:inputType="text"
+        android:inputType="number"
         android:rotation="0"
         android:rotationX="0"
         android:rotationY="00"
-        android:text="8888"
         android:textAlignment="center"
         app:layout_constraintEnd_toStartOf="@+id/guideline5"
         app:layout_constraintTop_toBottomOf="@+id/textView6" />
@@ -248,7 +233,7 @@
         android:layout_width="300dp"
         android:layout_height="150dp"
         android:layout_marginStart="-150dp"
-        android:layout_marginBottom="56dp"
+        android:layout_marginBottom="60dp"
         android:rotation="0"
         android:rotationX="0"
         android:rotationY="00"

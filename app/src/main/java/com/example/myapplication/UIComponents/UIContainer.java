@@ -9,9 +9,11 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.cardview.widget.CardView;
+
 import com.example.myapplication.R;
 
-public abstract class UIContainer extends FrameLayout {
+public abstract class UIContainer extends CardView {
     public UIContainer(Context context, String headText,int[] headColor, int[] headBackgroundColor) {
         super(context);
         init(context);
@@ -23,6 +25,17 @@ public abstract class UIContainer extends FrameLayout {
         super(context);
         init(context);
     }
+
+    public void setHead(String text) {
+        head.setText(text);
+    }
+    public void setHeadColor(int[] headColor){
+        head.setTextColor(Color.argb(headColor[0],headColor[1],headColor[2],headColor[3]));
+    }
+    public void setHeadBackgroundColor(int[] headBackgroundColor){
+        head.setBackgroundColor(Color.argb(headBackgroundColor[0],headBackgroundColor[1],headBackgroundColor[2],headBackgroundColor[3]));
+    }
+
     protected View container1;
     protected TextView head;
     protected LinearLayout layout;

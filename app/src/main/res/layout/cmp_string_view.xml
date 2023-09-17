@@ -7,8 +7,9 @@
         android:id="@+id/textView8"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="TextView"
-        android:textSize="24sp"
+        android:background="#CFCFCF"
         android:tag="textView"
-        android:background="#CFCFCF"/>
+        android:text="TextView"
+        android:textAlignment="center"
+        android:textSize="24sp" />
 </FrameLayout>

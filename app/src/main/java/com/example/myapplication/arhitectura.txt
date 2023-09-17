@@ -1,5 +1,21 @@
+String jsonString = "{\"dataScene\": [[" +
+                "0, \"Sample Text\", [255, 0, 0, 0], [255, 0, 0, 255], " +
+                "0, \"Another Text\", [255, 255, 255, 255], [255, 0, 0, 0]]," +
+                "[1, \"Text 2\", [255, 128, 255, 255], [255, 255, 0, 0], " +
+                "0, \"More Text\", [255, 0, 0, 255], [255, 128, 128, 255]]]}";
 приложение:
 подключение(отправка): <type(int) 1, password(String), user(String) "root"/"guest">
 
 сервер:
-подключение(ответ): <type(int) 1, status(String) "success"/"failure", debugMessage(String)>
+подключение(ответ): <type(int) 1, status(String) "success"/"failure", dataScene[object[type,id,arguments...]...]/debugMessage(String)>
+
+object:
+StringView: <int 0, int id, String headText, int[] headColor, int[] headBackgroundColor, String text, int[] textColor, int[] textBackgroundColor>
+
+String jsonString = "{\"dataScene\": [[" +
+//                "0, \"Sample Text\", [255, 0, 0, 0], [255, 0, 0, 255], " +
+//                "0, \"Another Text 1231  123" +
+//                "13\", [255, 255, 255, 255], [255, 0, 0, 0]]," +
+//                "[1, \"Text 2\", [255, 128, 255, 255], [255, 255, 0, 0], " +
+//                "0, \"More Text\", [255, 0, 0, 255], [255, 128, 128, 255]]]}";
+//        jsonString = jsonString.replaceAll("555","\n");
