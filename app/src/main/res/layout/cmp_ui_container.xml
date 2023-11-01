@@ -21,6 +21,6 @@
             android:text="123"
             android:textAlignment="center"
             android:textColor="#FFFFFF"
-            android:textSize="32sp" />
+            android:textSize="30sp" />
     </LinearLayout>
 </androidx.cardview.widget.CardView>

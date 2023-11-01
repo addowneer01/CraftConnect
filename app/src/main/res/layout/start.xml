@@ -31,7 +31,7 @@
         android:rotation="0"
         android:rotationX="0"
         android:rotationY="0"
-        android:text="100"
+        android:text="104"
         android:textAlignment="center"
         app:layout_constraintBottom_toTopOf="@+id/guideline3"
         app:layout_constraintStart_toEndOf="@+id/textView4" />
