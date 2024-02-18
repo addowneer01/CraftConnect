@@ -9,4 +9,9 @@ public interface TypeUpdate {
     int UPDATE_SET_TEXT = 3;
     int UPDATE_SET_TEXT_COLOR = 4;
     int UPDATE_SET_TEXT_BACKGROUND_COLOR = 5;
+
+    //StringWrite
+    int UPDATE_SET_HINT = 3;
+    int UPDATE_SET_BACKGROUND_COLOR = 4;
+    int UPDATE_SET_TEX = 5;
 }

@@ -30,10 +30,13 @@ import java.net.ConnectException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 public class NetService extends Service implements TypeMsg {
     private Socket socket;
@@ -45,6 +48,7 @@ public class NetService extends Service implements TypeMsg {
     private int port;
     private String password;
     Messenger toActivityMessenger;
+    SocketRequestRunnable socketRequestRunnable;
     private synchronized long getTime(){
         final long[] time = new long[1];
         time[0] = System.currentTimeMillis();
@@ -54,7 +58,7 @@ public class NetService extends Service implements TypeMsg {
     public int onStartCommand(Intent intent, int flags, int startId) {
 
         //startForeground(1, notification);
-        return START_STICKY;
+        return START_NOT_STICKY;
     }
     private class ServiceHandler extends Handler{
         @Override
@@ -73,6 +77,13 @@ public class NetService extends Service implements TypeMsg {
                 }
                 case MSG_TO_SERVICE_START -> {
                     executorService.execute(new ConnectRunnable(data.getString("ip"),data.getInt("port"),data.getString("password")));
+                }
+                case MSG_TO_SERVICE_WRITE -> {
+                    JsonObject json = new JsonObject();
+                    json.addProperty("type", 4);
+                    json.addProperty("num", data.getInt("num"));
+                    json.addProperty("value", data.getString("value"));
+                    socketRequestRunnable.sendOnThread(json);
                 }
             }
         }
@@ -124,7 +135,7 @@ public class NetService extends Service implements TypeMsg {
                 bundle.putBoolean("result",false);
             }
             catch (ConnectException e){
-                bundle.putString("debug", "Ошибка подключения");
+                bundle.putString("debug", e.getMessage());
                 bundle.putBoolean("result",false);
             }
             catch (SocketTimeoutException e){
@@ -149,9 +160,11 @@ public class NetService extends Service implements TypeMsg {
         static void setPingTimeOut(int time){
             pintTimeOut = time;
         }
+        Future<?> request;
         @Override
         public void run() {
-            executorService.execute(new SocketRequestRunnable(1000,100));
+            socketRequestRunnable = new SocketRequestRunnable(1000,100);
+            request = executorService.submit(socketRequestRunnable);
             long lastPing = getTime();
             while (socket.isConnected() && !socket.isClosed()){
                 try {
@@ -210,6 +223,7 @@ public class NetService extends Service implements TypeMsg {
         private boolean reconnect(){
             try {
                 socket.close();
+                request.cancel(true);
                 socket = new Socket();
                 socket.connect(new InetSocketAddress(ip, port), 5000);
                 socket.setSoTimeout(5000);
@@ -227,6 +241,9 @@ public class NetService extends Service implements TypeMsg {
                 bundle.putString("head", "Подключено");
                 msgH.setData(bundle);
                 sendToActivity(msgH);
+                JsonObject jsonObject = new JsonObject();
+                jsonObject.addProperty("type",2);
+                sendJson(jsonObject);
                 return true;
             } catch (Exception e) {
                 reconnectionAttempts++;
@@ -240,6 +257,8 @@ public class NetService extends Service implements TypeMsg {
     }
     private class SocketRequestRunnable implements Runnable{
         private Timer timer = new Timer();
+        Queue<JsonObject> out = new LinkedList<>();
+
         SocketRequestRunnable
         (long timePing, long timeUpdate){
             timer.scheduleAtFixedRate(new PingTask(),0, timePing);
@@ -248,6 +267,13 @@ public class NetService extends Service implements TypeMsg {
         @Override
         public void run() {
 
+        }
+        public void stop(){
+
+        }
+
+        public void sendOnThread(JsonObject json) {
+            out.add(json);
         }
         private class PingTask extends TimerTask {
             @Override
@@ -272,6 +298,13 @@ public class NetService extends Service implements TypeMsg {
                 } catch (IOException e) {
                     Log.e("Request", e.getMessage());
                 }
+                while (!out.isEmpty() && socket.isConnected()){
+                    try {
+                        sendJson(out.poll());
+                    } catch (IOException e) {
+                        Log.e("sendWrite",e.getMessage());
+                    }
+                }
             }
         }
     }
@@ -291,6 +324,7 @@ public class NetService extends Service implements TypeMsg {
         sendJson(gson.toJson(json));
     }
     private void sendJson(String ms) throws IOException {
+        //Log.d("out", ms);
         output.write(ms.getBytes());
         output.write('\n');
         output.flush();

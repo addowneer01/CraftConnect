@@ -22,16 +22,19 @@ import com.example.myapplication.TypeMsg;
 import com.example.myapplication.NetService;
 import com.example.myapplication.R;
 import com.example.myapplication.UIComponents.TypeUpdate;
+import com.example.myapplication.UIComponents.TypeWidget;
 import com.example.myapplication.UIComponents.UIStringView;
+import com.example.myapplication.UIComponents.UIStringWrite;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import java.util.HashMap;
 
-public class MainActivity extends AppCompatActivity  implements TypeMsg, TypeUpdate {
+public class MainActivity extends AppCompatActivity  implements TypeMsg, TypeUpdate, TypeWidget {
     private Messenger toServiceMessenger;
     private NetServiceConnection netServiceConnection;
+    //private Timer timer = new Timer();
 
     private class ActivityHandler extends Handler {
         @Override
@@ -39,7 +42,7 @@ public class MainActivity extends AppCompatActivity  implements TypeMsg, TypeUpd
             Bundle data = msg.getData();
             switch (msg.what) {
                 case MSG_TO_MAIN_EXCEPTION -> {
-                    addErrorMessage(data.getString("headDebug"),data.getString("debug"),1);
+                    addErrorMessage(data.getString("headDebug"),data.getString("debug"),1,20000);
                 }
                 case MSG_TO_MAIN_RUN -> {
                     if (!data.getBoolean("run")) setActivityStart();
@@ -52,8 +55,8 @@ public class MainActivity extends AppCompatActivity  implements TypeMsg, TypeUpd
                 }
                 case MSG_TO_MAIN_DATA_SCENE -> {
                     JsonObject json = toJsonObject(data.getString("json"));
-                    clearLayout();
-                    setWidget(json.get("dataScene").getAsJsonArray(), false);
+                    setWidget(json.get("dataScene").getAsJsonArray(), true);
+//                    addStringWrite(Master.mainActivity,3,"Дисплей", new int[]{255,255,123,123},new int[]{255,123,255,123},"сообщение",new int[]{255,123,123,255});
                 }
                 case MSG_STOP_SERVICE -> {
                     toServiceMessenger = null;
@@ -65,7 +68,7 @@ public class MainActivity extends AppCompatActivity  implements TypeMsg, TypeUpd
                 case MSG_TO_MAIN_HEAD -> setDebugText(data.getString("head"));
                 case MSG_TO_MAIN_SIMPLE_UPDATE -> {
                     JsonObject json = toJsonObject(data.getString("json"));
-                    setWidget(json.get("dataScene").getAsJsonArray(),true);
+                    setWidget(json.get("dataScene").getAsJsonArray(),false);
                 }
             }
         }
@@ -88,6 +91,15 @@ public class MainActivity extends AppCompatActivity  implements TypeMsg, TypeUpd
         debug = findViewById(R.id.debug_main);
         setButton = findViewById(R.id.set_button_main);
         connectService();
+//        UIStringView stringView = new UIStringView(this);
+//        stringView.setHead("Время работы");
+//        stringView.setText("14 сек");
+//        layout.addView(stringView);
+//        UIStringWrite stringWrite = new UIStringWrite(this);
+//        stringWrite.setHead("Дисплей");
+//        stringWrite.editText.setHint("Текст");
+//        layout.addView(stringWrite);
+//        setDebugText("Подключено");
     }
     public void connectService(){
         if (!Master.getInstance().isServiceRunning(NetService.class)) startService(new Intent(this, NetService.class));
@@ -116,6 +128,11 @@ public class MainActivity extends AppCompatActivity  implements TypeMsg, TypeUpd
         } catch (RemoteException e) {
             Log.e("Msg to service", e.getMessage());
         }
+    }
+    public void sendToService(int t, Bundle data){
+        Message msg = Message.obtain(null,t);
+        msg.setData(data);
+        sendToService(msg);
     }
     @Override
     protected void onPause() {
@@ -146,58 +163,51 @@ public class MainActivity extends AppCompatActivity  implements TypeMsg, TypeUpd
         return gson.fromJson(response, JsonObject.class);
     }
     private final HashMap<Integer, UIStringView> stringViewHashMap = new HashMap<>();
-    private void setWidget(JsonArray dataScene, boolean simpleUpdate){
+    private final HashMap<Integer, UIStringWrite> stringWriteHashMap = new HashMap<>();
+    private void setWidget(JsonArray dataScene, boolean refresh){
+        if (refresh) clearLayout();
         for (int i = 0;i<dataScene.size();i++){
             try {
                 JsonObject object = dataScene.get(i).getAsJsonObject();
+                int number = object.get("num").getAsInt();
+                int[] headColor = new int[4];
+                int[] headBackgroundColor = new int[4];
+                for (int j = 0;j<4;j++){
+                    headColor[j] = object.get(String.valueOf(UPDATE_SET_HEAD_COLOR)).getAsJsonArray().get(j).getAsInt();
+                    headBackgroundColor[j] = object.get(String.valueOf(UPDATE_SET_HEAD_BACKGROUND_COLOR)).getAsJsonArray().get(j).getAsInt();
+                }
+                StringBuilder head = new StringBuilder(object.get(String.valueOf(UPDATE_SET_HEAD)).toString());
+                head.deleteCharAt(0).deleteCharAt(head.length()-1);
                 switch (object.get("type").getAsInt()){
-                    case 0 -> {
-                        int number = object.get("num").getAsInt();
-                        int[] headColor = new int[4];
-                        int[] headBackgroundColor = new int[4];
+                    case STRING_VIEW -> {
                         int[] textColor = new int[4];
                         int[] textBackgroundColor = new int[4];
                         for (int j = 0;j<4;j++){
-                            headColor[j] = object.get(String.valueOf(UPDATE_SET_HEAD_COLOR)).getAsJsonArray().get(j).getAsInt();
-                            headBackgroundColor[j] = object.get(String.valueOf(UPDATE_SET_HEAD_BACKGROUND_COLOR)).getAsJsonArray().get(j).getAsInt();
                             textColor[j] = object.get(String.valueOf(UPDATE_SET_TEXT_COLOR)).getAsJsonArray().get(j).getAsInt();
                             textBackgroundColor[j] = object.get(String.valueOf(UPDATE_SET_TEXT_BACKGROUND_COLOR)).getAsJsonArray().get(j).getAsInt();
                         }
-                        StringBuilder head = new StringBuilder(object.get(String.valueOf(UPDATE_SET_HEAD)).toString());
-                        head.deleteCharAt(0).deleteCharAt(head.length()-1);
                         StringBuilder text = new StringBuilder(object.get(String.valueOf(UPDATE_SET_TEXT)).toString());
                         text.deleteCharAt(0).deleteCharAt(text.length()-1);
-                        if (!simpleUpdate){
-                            addStringView(
-                                    this,
-                                    number,
-                                    head.toString(),
-                                    headColor,
-                                    headBackgroundColor,
-                                    text.toString(),
-                                    textColor,
-                                    textBackgroundColor
-                            );
-                        }else {
-                            setStringView(
-                                    number,
-                                    head.toString(),
-                                    headColor,
-                                    headBackgroundColor,
-                                    text.toString(),
-                                    textColor,
-                                    textBackgroundColor
-                            );
+                        if (refresh) addStringView(this, number, head.toString(), headColor, headBackgroundColor, text.toString(), textColor, textBackgroundColor);
+                        else setStringView(number, head.toString(), headColor, headBackgroundColor, text.toString(), textColor, textBackgroundColor);
+                    }
+                    case STRING_WRITE -> {
+                        int[] color = new int[4];
+                        for (int j = 0;j<4;j++){
+                            color[j] = object.get(String.valueOf(UPDATE_SET_BACKGROUND_COLOR)).getAsJsonArray().get(j).getAsInt();
                         }
+                        StringBuilder hint = new StringBuilder(object.get(String.valueOf(UPDATE_SET_HINT)).toString());
+                        hint.deleteCharAt(0).deleteCharAt(hint.length()-1);
+                        if (refresh) addStringWrite(this, number, head.toString(), headColor, headBackgroundColor, hint.toString(), color);
+                        else setStringWrite(number, head.toString(), headColor, headBackgroundColor, hint.toString(), color);
                     }
                 }
             }catch (Exception e){
                 setDebugText("Ошибка");
-                addErrorMessage("Ошибка создания виджета",e.toString(),i+1);
+                addErrorMessage("Ошибка создания виджета",e.toString(),i+1,60000);
             }
         }
         setDebugText("Подключено");
-
     }
 
 //    private void update(JsonArray json){
@@ -252,12 +262,25 @@ public class MainActivity extends AppCompatActivity  implements TypeMsg, TypeUpd
         stringView.setTextColor(textColor);
         stringView.setTextBackgroundColor(textBackgroundColor);
     }
+    public void setStringWrite(int number, String headText, int[] headColor, int[] headBackgroundColor, String hint, int[] backgroundColor){
+        UIStringWrite stringWrite = getStringWrite(number);
+        stringWrite.setHead(headText);
+        stringWrite.setHeadColor(headColor);
+        stringWrite.setHeadBackgroundColor(headBackgroundColor);
+        stringWrite.setHint(hint);
+        stringWrite.setBackgroundColor(backgroundColor);
+    }
     public void addStringView(Context context, Integer number, String headText, int[] headColor, int[] headBackgroundColor, String text, int[] textColor, int[] textBackgroundColor){
         UIStringView stringView = new UIStringView(context, headText,headColor,headBackgroundColor,text,textColor,textBackgroundColor);
         layout.addView(stringView);
         stringViewHashMap.put(number,stringView);
     }
-    public void addErrorMessage(String head, String message,int index){
+    public void addStringWrite(Context context, int num, String headText, int[] headColor, int[] headBackgroundColor, String hint, int[] backgroundColor){
+        UIStringWrite stringWrite = new UIStringWrite(context,num,headText,headColor,headBackgroundColor,hint,backgroundColor);
+        layout.addView(stringWrite);
+        stringWriteHashMap.put(num,stringWrite);
+    }
+    public void addErrorMessage(String head, String message,int index, int delay){
         UIStringView stringView = new UIStringView(this,
                 head,
                 new int[]{255, 255, 255, 255},
@@ -267,16 +290,34 @@ public class MainActivity extends AppCompatActivity  implements TypeMsg, TypeUpd
                 new int[]{255, 207, 207, 207}
         );
         layout.addView(stringView, index);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                layout.removeView(stringView);
+            }
+        }, delay);
     }
     private void clearLayout(){
         int childCount = layout.getChildCount();
         for (int i = childCount - 1; i > 0; i--) {
             layout.removeViewAt(i);
         }
+        stringViewHashMap.clear();
+        stringWriteHashMap.clear();
     }
     public UIStringView getStringView(int number){
         return stringViewHashMap.get(number);
 
+    }
+    public UIStringWrite getStringWrite(int number){
+        return stringWriteHashMap.get(number);
+
+    }
+    public void sendWrite(int num, String value){
+        Bundle bundle = new Bundle();
+        bundle.putInt("num", num);
+        bundle.putString("value",value);
+        sendToService(MSG_TO_SERVICE_WRITE, bundle);
     }
     public void setDebugText(String text){
         debug.setText(text);

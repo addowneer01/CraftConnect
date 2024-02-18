@@ -11,4 +11,5 @@ public interface TypeMsg {
     int MSG_TO_MAIN_RUN = 6;
     int MSG_STOP_SERVICE = 7;
     int MSG_TO_MAIN_HEAD = 8;
+    int MSG_TO_SERVICE_WRITE = 9;
 }
