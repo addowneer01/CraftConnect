@@ -34,7 +34,17 @@ public class UIStringWrite extends UIContainer implements TypeUpdate{
     public EditText editText;
     protected Button sendButton;
     protected LinearLayout linearLayout;
-
+    @Override
+    public void setHeadColor(int[] headColor){
+        super.setHeadColor(headColor);
+        sendButton.setTextColor(Color.argb(headColor[0],headColor[1],headColor[2],headColor[3]));
+        editText.setTextColor(Color.argb(headColor[0],headColor[1],headColor[2],headColor[3]));
+    }
+    @Override
+    public void setHeadBackgroundColor(int[] headBackgroundColor){
+        super.setHeadBackgroundColor(headBackgroundColor);
+        sendButton.setBackgroundColor(Color.argb(headBackgroundColor[0],headBackgroundColor[1],headBackgroundColor[2],headBackgroundColor[3]));
+    }
     public void setHint(String hint){
         editText.setHint(hint);
     }

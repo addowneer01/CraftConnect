@@ -25,6 +25,7 @@ import com.example.myapplication.UIComponents.TypeUpdate;
 import com.example.myapplication.UIComponents.TypeWidget;
 import com.example.myapplication.UIComponents.UIStringView;
 import com.example.myapplication.UIComponents.UIStringWrite;
+import com.example.myapplication.UIComponents.UISwitch;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -90,16 +91,9 @@ public class MainActivity extends AppCompatActivity  implements TypeMsg, TypeUpd
         layout = findViewById(R.id.layout_main);
         debug = findViewById(R.id.debug_main);
         setButton = findViewById(R.id.set_button_main);
-        connectService();
-//        UIStringView stringView = new UIStringView(this);
-//        stringView.setHead("Время работы");
-//        stringView.setText("14 сек");
-//        layout.addView(stringView);
-//        UIStringWrite stringWrite = new UIStringWrite(this);
-//        stringWrite.setHead("Дисплей");
-//        stringWrite.editText.setHint("Текст");
-//        layout.addView(stringWrite);
-//        setDebugText("Подключено");
+        //connectService();
+        UISwitch uiSwitch = new UISwitch(this);
+        layout.addView(uiSwitch);
     }
     public void connectService(){
         if (!Master.getInstance().isServiceRunning(NetService.class)) startService(new Intent(this, NetService.class));
@@ -183,10 +177,10 @@ public class MainActivity extends AppCompatActivity  implements TypeMsg, TypeUpd
                         int[] textColor = new int[4];
                         int[] textBackgroundColor = new int[4];
                         for (int j = 0;j<4;j++){
-                            textColor[j] = object.get(String.valueOf(UPDATE_SET_TEXT_COLOR)).getAsJsonArray().get(j).getAsInt();
-                            textBackgroundColor[j] = object.get(String.valueOf(UPDATE_SET_TEXT_BACKGROUND_COLOR)).getAsJsonArray().get(j).getAsInt();
+                            textColor[j] = object.get(String.valueOf(UPDATE_SV_SET_TEXT_COLOR)).getAsJsonArray().get(j).getAsInt();
+                            textBackgroundColor[j] = object.get(String.valueOf(UPDATE_SV_SET_TEXT_BACKGROUND_COLOR)).getAsJsonArray().get(j).getAsInt();
                         }
-                        StringBuilder text = new StringBuilder(object.get(String.valueOf(UPDATE_SET_TEXT)).toString());
+                        StringBuilder text = new StringBuilder(object.get(String.valueOf(UPDATE_SV_SET_TEXT)).toString());
                         text.deleteCharAt(0).deleteCharAt(text.length()-1);
                         if (refresh) addStringView(this, number, head.toString(), headColor, headBackgroundColor, text.toString(), textColor, textBackgroundColor);
                         else setStringView(number, head.toString(), headColor, headBackgroundColor, text.toString(), textColor, textBackgroundColor);
@@ -194,9 +188,9 @@ public class MainActivity extends AppCompatActivity  implements TypeMsg, TypeUpd
                     case STRING_WRITE -> {
                         int[] color = new int[4];
                         for (int j = 0;j<4;j++){
-                            color[j] = object.get(String.valueOf(UPDATE_SET_BACKGROUND_COLOR)).getAsJsonArray().get(j).getAsInt();
+                            color[j] = object.get(String.valueOf(UPDATE_SW_SET_BACKGROUND_COLOR)).getAsJsonArray().get(j).getAsInt();
                         }
-                        StringBuilder hint = new StringBuilder(object.get(String.valueOf(UPDATE_SET_HINT)).toString());
+                        StringBuilder hint = new StringBuilder(object.get(String.valueOf(UPDATE_SW_SET_HINT)).toString());
                         hint.deleteCharAt(0).deleteCharAt(hint.length()-1);
                         if (refresh) addStringWrite(this, number, head.toString(), headColor, headBackgroundColor, hint.toString(), color);
                         else setStringWrite(number, head.toString(), headColor, headBackgroundColor, hint.toString(), color);
