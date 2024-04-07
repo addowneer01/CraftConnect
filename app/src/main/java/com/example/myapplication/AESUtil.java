@@ -8,6 +8,7 @@ import java.security.Key;
 
 public class AESUtil {
     private static final String ALGORITHM = "AES";
+    int sd;
 
     public static byte[] encrypt(String data, String key) throws Exception {
         Key secretKey = new SecretKeySpec(key.getBytes(), ALGORITHM);
