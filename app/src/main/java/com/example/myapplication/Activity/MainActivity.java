@@ -91,9 +91,9 @@ public class MainActivity extends AppCompatActivity  implements TypeMsg, TypeUpd
         layout = findViewById(R.id.layout_main);
         debug = findViewById(R.id.debug_main);
         setButton = findViewById(R.id.set_button_main);
-        connectService();
-        //UISwitch uiSwitch = new UISwitch(this);
-        //layout.addView(uiSwitch);
+        //connectService();
+        UISwitch uiSwitch = new UISwitch(this);
+        layout.addView(uiSwitch);
     }
     public void connectService(){
         if (!Master.getInstance().isServiceRunning(NetService.class)) startService(new Intent(this, NetService.class));

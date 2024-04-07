@@ -8,6 +8,7 @@
 
     <Switch
         android:id="@+id/switch4"
+        android:tag="switch"
         android:layout_width="match_parent"
         android:layout_height="80dp"
         android:fitsSystemWindows="true"
