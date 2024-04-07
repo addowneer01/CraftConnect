@@ -66,18 +66,4 @@ public class Master{
         }
         return false;
     }
-
-    ////////////////////////////////////////////////////////////////////////////
-
-    private final Handler uiHandler = new Handler(Looper.getMainLooper());
-    private long getTime(){
-        final long[] time = new long[1];
-        time[0] = System.currentTimeMillis();
-        return time[0];
-    }
-
-
-
-
-////////////////////////////////////////////////////////////////////////////////
 }
