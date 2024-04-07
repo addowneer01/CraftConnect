@@ -185,6 +185,7 @@ public class MainActivity extends AppCompatActivity  implements TypeMsg, TypeUpd
                         if (refresh) addStringView(this, number, head.toString(), headColor, headBackgroundColor, text.toString(), textColor, textBackgroundColor);
                         else setStringView(number, head.toString(), headColor, headBackgroundColor, text.toString(), textColor, textBackgroundColor);
                     }
+
                     case STRING_WRITE -> {
                         int[] color = new int[4];
                         for (int j = 0;j<4;j++){
