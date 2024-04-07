@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.os.Message;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -29,6 +31,23 @@ public class StartActivity extends AppCompatActivity implements TypeMsg {
         password = findViewById(R.id.password_plain);
         debug = findViewById(R.id.debug_text);
         connectButton = findViewById(R.id.connect_button);
+        key = findViewById(R.id.password_plain2);
+        box = findViewById(R.id.checkBox);
+        view = findViewById(R.id.textView9);
+        key.setVisibility(View.INVISIBLE);
+        view.setVisibility(View.INVISIBLE);
+        box.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    key.setVisibility(View.VISIBLE);
+                    view.setVisibility(View.VISIBLE);
+                } else {
+                    key.setVisibility(View.INVISIBLE);
+                    view.setVisibility(View.INVISIBLE);
+                }
+            }
+        });
         connectButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -47,6 +66,13 @@ public class StartActivity extends AppCompatActivity implements TypeMsg {
                     data.putString("ip",ip);
                     data.putInt("port",portInt);
                     data.putString("password",passwordS);
+                    if (box.isChecked()){
+                        data.putBoolean("encrypt", true);
+                        data.putString("key", key.getText().toString());
+                    }else {
+                        data.putBoolean("encrypt", false);
+                        data.putString("key", "");
+                    }
                     msg.setData(data);
                     Master.mainActivity.sendToService(msg);
                 }
@@ -78,6 +104,11 @@ public class StartActivity extends AppCompatActivity implements TypeMsg {
     private EditText password;
     private Button connectButton;
     private TextView debug;
+    private EditText key;
+    private CheckBox box;
+    private TextView view;
+
+
     @Override
     public void onBackPressed() {
         moveTaskToBack(true);

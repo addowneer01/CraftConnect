@@ -40,6 +40,8 @@ import java.util.concurrent.Future;
 
 public class NetService extends Service implements TypeMsg {
     private Socket socket;
+    boolean encrypt;
+    String key;
     private boolean run = false;
     private final ExecutorService executorService = Executors.newFixedThreadPool(3);
     private BufferedReader reader;
@@ -77,6 +79,8 @@ public class NetService extends Service implements TypeMsg {
                 }
                 case MSG_TO_SERVICE_START -> {
                     executorService.execute(new ConnectRunnable(data.getString("ip"),data.getInt("port"),data.getString("password")));
+                    encrypt = data.getBoolean("encrypt");
+                    key = data.getString("key");
                 }
                 case MSG_TO_SERVICE_WRITE -> {
                     JsonObject json = new JsonObject();
@@ -114,7 +118,7 @@ public class NetService extends Service implements TypeMsg {
                 String request = gson.toJson(json);
                 sendJson(request);
                 gson = new Gson();
-                String response = reader.readLine();
+                String response = requestJson();
                 JsonObject jsonResponse = gson.fromJson(response, JsonObject.class);
                 if (jsonResponse.get("type").getAsInt() != 1) throw new RuntimeException("Неправильный тип пакета");
                 if(!jsonResponse.get("status").getAsString().equals("success")) {
@@ -171,7 +175,7 @@ public class NetService extends Service implements TypeMsg {
                     if (reader.ready()) {
                         lastPing = getTime();
                         Gson gson = new Gson();
-                        String response = reader.readLine();
+                        String response = requestJson();
                         JsonObject jsonPackage = gson.fromJson(response, JsonObject.class);
                         Bundle bundle = new Bundle();
                         switch (jsonPackage.get("type").getAsInt()){
@@ -325,6 +329,13 @@ public class NetService extends Service implements TypeMsg {
     }
     private void sendJson(String ms) throws IOException {
         //Log.d("out", ms);
+        if (encrypt) {
+            try {
+                ms = new String(AESUtil.encrypt(ms, key));
+            } catch (Exception e) {
+                Log.e("encrypt", "encrypt error");
+            }
+        }
         output.write(ms.getBytes());
         output.write('\n');
         output.flush();
@@ -340,6 +351,11 @@ public class NetService extends Service implements TypeMsg {
         } catch (RemoteException e) {
             Log.e("Msg to activity", e.getMessage());
         }
+    }
+    private String requestJson() throws Exception {
+        String response = reader.readLine();
+        if (encrypt) response = AESUtil.decrypt(response.getBytes(), key);
+        return response;
     }
     @Override
     public IBinder onBind(Intent intent) {

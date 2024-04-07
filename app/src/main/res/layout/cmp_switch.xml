@@ -3,23 +3,16 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="100dp">
+    android:layout_height="wrap_content"
+    android:textAlignment="inherit">
 
-    <LinearLayout
+    <Switch
+        android:id="@+id/switch4"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal">
-
-        <TextView
-            android:id="@+id/textView10"
-            android:layout_width="523dp"
-            android:layout_height="100dp"
-            android:text="TextView" />
-
-        <com.google.android.material.chip.Chip
-            android:id="@+id/chip4"
-            android:layout_width="10dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" />
-    </LinearLayout>
+        android:layout_height="80dp"
+        android:fitsSystemWindows="true"
+        android:switchMinWidth="100dp"
+        android:text="Дверь"
+        android:textSize="24sp"
+        android:typeface="normal" />
 </FrameLayout>
