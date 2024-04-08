@@ -17,6 +17,6 @@ public interface TypeUpdate {
     //SwitchGroup
     int UPDATE_SG_SET_TEXT = 3;
     int UPDATE_SG_SET_P = 4;
-    int UPDATE_SG_SET_BACKGROUND_COLOR = 5;
-
+    int UPDATE_SG_SET_BACKGROUND_COLOR1 = 5;
+    int UPDATE_SG_SET_BACKGROUND_COLOR2 = 6;
 }

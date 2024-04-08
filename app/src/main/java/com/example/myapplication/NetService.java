@@ -90,7 +90,12 @@ public class NetService extends Service implements TypeMsg {
                     socketRequestRunnable.sendOnThread(json);
                 }
                 case MSG_TO_SERVICE_SWITCH -> {
-
+                    JsonObject json = new JsonObject();
+                    json.addProperty("type", 4);
+                    json.addProperty("num", data.getInt("num"));
+                    json.addProperty("num2", data.getInt("num2"));
+                    json.addProperty("checked", data.getBoolean("p"));
+                    socketRequestRunnable.sendOnThread(json);
                 }
             }
         }

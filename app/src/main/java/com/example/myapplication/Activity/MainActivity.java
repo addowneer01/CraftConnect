@@ -92,9 +92,11 @@ public class MainActivity extends AppCompatActivity  implements TypeMsg, TypeUpd
         layout = findViewById(R.id.layout_main);
         debug = findViewById(R.id.debug_main);
         setButton = findViewById(R.id.set_button_main);
-        //connectService();
+//        connectService();
         UISwitchGroup uiSwitchGroup = new UISwitchGroup(this,5);
         layout.addView(uiSwitchGroup);
+        switchGroupHashMap.put(-1,uiSwitchGroup);
+        uiSwitchGroup.setHead("");
     }
     public void connectService(){
         if (!Master.getInstance().isServiceRunning(NetService.class)) startService(new Intent(this, NetService.class));
@@ -159,6 +161,7 @@ public class MainActivity extends AppCompatActivity  implements TypeMsg, TypeUpd
     }
     private final HashMap<Integer, UIStringView> stringViewHashMap = new HashMap<>();
     private final HashMap<Integer, UIStringWrite> stringWriteHashMap = new HashMap<>();
+    private final HashMap<Integer, UISwitchGroup> switchGroupHashMap = new HashMap<>();
     private void setWidget(JsonArray dataScene, boolean refresh){
         if (refresh) clearLayout();
         for (int i = 0;i<dataScene.size();i++){
@@ -196,6 +199,45 @@ public class MainActivity extends AppCompatActivity  implements TypeMsg, TypeUpd
                         hint.deleteCharAt(0).deleteCharAt(hint.length()-1);
                         if (refresh) addStringWrite(this, number, head.toString(), headColor, headBackgroundColor, hint.toString(), color);
                         else setStringWrite(number, head.toString(), headColor, headBackgroundColor, hint.toString(), color);
+                    }
+
+                    case SWITCH_GROUP -> {
+                        int num2 = object.get("num2").getAsInt();
+                        int[] color1 = new int[4];
+                        int[] color2 = new int[4];
+                        for (int j = 0;j<4;j++){
+                            color1[j] = object.get(String.valueOf(UPDATE_SG_SET_BACKGROUND_COLOR1)).getAsJsonArray().get(j).getAsInt();
+                            color2[j] = object.get(String.valueOf(UPDATE_SG_SET_BACKGROUND_COLOR2)).getAsJsonArray().get(j).getAsInt();
+                        }
+                        JsonArray list = object.getAsJsonArray("switches");
+                        if (refresh){
+                            UISwitchGroup switchGroup = switchGroupHashMap.get(number);
+                            UISwitch[] switches = switchGroup.getSwitches();
+                            for (int j = 0;j<list.size();j++){
+                                JsonObject jswitch = list.get(j).getAsJsonObject();
+                                StringBuilder text = new StringBuilder(jswitch.get(String.valueOf(UPDATE_SG_SET_TEXT)).getAsString());
+                                text.deleteCharAt(0).deleteCharAt(text.length()-1);
+                                boolean p = jswitch.get(String.valueOf(UPDATE_SG_SET_P)).getAsBoolean();
+                                switches[j].setText(text.toString());
+                                switches[j].setChecked(p);
+                                if (j%2==0) switches[j].setBackgroundColor(color1);
+                                else switches[j].setBackgroundColor(color2);
+                            }
+                        }
+                        else {
+                            UISwitchGroup switchGroup = new UISwitchGroup(this, head.toString(), headColor, headBackgroundColor);
+                            UISwitch[] switches = new UISwitch[list.size()];
+                            for (int j = 0;j<list.size();j++){
+                                JsonObject jswitch = list.get(j).getAsJsonObject();
+                                StringBuilder text = new StringBuilder(jswitch.get(String.valueOf(UPDATE_SG_SET_TEXT)).getAsString());
+                                text.deleteCharAt(0).deleteCharAt(text.length()-1);
+                                boolean p = jswitch.get(String.valueOf(UPDATE_SG_SET_P)).getAsBoolean();
+                                if (j%2==0) switches[j] = new UISwitch(switchGroup.getLayout(), number,num2,text.toString(),p,color1);
+                                else switches[j] = new UISwitch(switchGroup.getLayout(), number,num2,text.toString(),p,color2);
+                            }
+                            switchGroup.init(switches);
+                        }
+
                     }
                 }
             }catch (Exception e){
@@ -316,7 +358,7 @@ public class MainActivity extends AppCompatActivity  implements TypeMsg, TypeUpd
         sendToService(MSG_TO_SERVICE_WRITE, bundle);
     }
     public void sendSwitch(int num1, int num2, boolean p){
-        //Log.d("switch", num1 + " " + num2 + " " + p);
+        Log.d("switch", num1 + " " + num2 + " " + p);
         Bundle bundle = new Bundle();
         bundle.putInt("num", num1);
         bundle.putInt("num2", num2);
