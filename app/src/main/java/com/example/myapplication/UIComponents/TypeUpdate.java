@@ -13,4 +13,10 @@ public interface TypeUpdate {
     //StringWrite
     int UPDATE_SW_SET_HINT = 3;
     int UPDATE_SW_SET_BACKGROUND_COLOR = 4;
+
+    //SwitchGroup
+    int UPDATE_SG_SET_TEXT = 3;
+    int UPDATE_SG_SET_P = 4;
+    int UPDATE_SG_SET_BACKGROUND_COLOR = 5;
+
 }

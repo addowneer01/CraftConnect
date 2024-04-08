@@ -26,6 +26,7 @@ import com.example.myapplication.UIComponents.TypeWidget;
 import com.example.myapplication.UIComponents.UIStringView;
 import com.example.myapplication.UIComponents.UIStringWrite;
 import com.example.myapplication.UIComponents.UISwitch;
+import com.example.myapplication.UIComponents.UISwitchGroup;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -92,8 +93,8 @@ public class MainActivity extends AppCompatActivity  implements TypeMsg, TypeUpd
         debug = findViewById(R.id.debug_main);
         setButton = findViewById(R.id.set_button_main);
         //connectService();
-        UISwitch uiSwitch = new UISwitch(this);
-        layout.addView(uiSwitch);
+        UISwitchGroup uiSwitchGroup = new UISwitchGroup(this,5);
+        layout.addView(uiSwitchGroup);
     }
     public void connectService(){
         if (!Master.getInstance().isServiceRunning(NetService.class)) startService(new Intent(this, NetService.class));
@@ -313,6 +314,14 @@ public class MainActivity extends AppCompatActivity  implements TypeMsg, TypeUpd
         bundle.putInt("num", num);
         bundle.putString("value",value);
         sendToService(MSG_TO_SERVICE_WRITE, bundle);
+    }
+    public void sendSwitch(int num1, int num2, boolean p){
+        //Log.d("switch", num1 + " " + num2 + " " + p);
+        Bundle bundle = new Bundle();
+        bundle.putInt("num", num1);
+        bundle.putInt("num2", num2);
+        bundle.putBoolean("p",p);
+        sendToService(MSG_TO_SERVICE_SWITCH, bundle);
     }
     public void setDebugText(String text){
         debug.setText(text);
