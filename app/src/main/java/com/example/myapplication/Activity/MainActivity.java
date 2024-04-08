@@ -92,11 +92,15 @@ public class MainActivity extends AppCompatActivity  implements TypeMsg, TypeUpd
         layout = findViewById(R.id.layout_main);
         debug = findViewById(R.id.debug_main);
         setButton = findViewById(R.id.set_button_main);
-//        connectService();
-        UISwitchGroup uiSwitchGroup = new UISwitchGroup(this,5);
-        layout.addView(uiSwitchGroup);
-        switchGroupHashMap.put(-1,uiSwitchGroup);
-        uiSwitchGroup.setHead("");
+        connectService();
+//        JsonArray data = new JsonArray();
+//        JsonObject object = new JsonObject();
+//        data.add(object);
+//        object.
+////        UISwitchGroup uiSwitchGroup = new UISwitchGroup(this,5);
+////        layout.addView(uiSwitchGroup);
+////        switchGroupHashMap.put(-1,uiSwitchGroup);
+////        uiSwitchGroup.setHead("");
     }
     public void connectService(){
         if (!Master.getInstance().isServiceRunning(NetService.class)) startService(new Intent(this, NetService.class));
